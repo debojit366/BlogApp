@@ -14,10 +14,23 @@ const Navbar = () => {
   const handleRegisterButton = ()=>{
     navigate('/register')
   }
+  const handleMyBlog = ()=>{
+    navigate('/my-blog')
+  }
+  const handleAllBlog = ()=>{
+    navigate('/all-blogs')
+  }
   return (
     <nav >
       <div >BlogApp</div>
-      {!loggedIn ? <><button onClick={handleLoginButton}>Login</button> <button onClick={handleRegisterButton}>Register</button></>  : <button onClick={handleLogoutButton}>Logout</button>}
+      {!loggedIn ? <><button onClick={handleLoginButton}>Login</button>
+       <button onClick={handleRegisterButton}>Register</button>
+       </>
+         : <>
+         <button onClick={handleLogoutButton}>Logout</button>
+         <button onClick={handleMyBlog}>My Blog</button>
+       <button onClick={handleAllBlog}>All Blog</button>
+         </>}
     </nav>
   );
 };
