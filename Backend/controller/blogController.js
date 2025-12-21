@@ -145,24 +145,43 @@ const getBlogByIdController = async (req, res) => {
 
 //Delete Blog
 const deleteBlogController = async (req, res) => {
+  let session;
   try {
-    const blog = await blogModel
-      // .findOneAndDelete(req.params.id)
-      .findByIdAndDelete(req.params.id)
-      .populate("user");
-    await blog.user.blogs.pull(blog);
-    await blog.user.save();
+    // 1. Pehle blog dhoondho (Delete mat karo abhi) aur user ko populate karo
+    const blog = await blogModel.findById(req.params.id).populate("user");
+
+    if (!blog) {
+      return res.status(404).send({ success: false, message: "Blog not found" });
+    }
+
+    // 2. Ab session shuru karo asli kaam ke liye
+    session = await mongoose.startSession();
+    session.startTransaction();
+
+    // 3. Blog ko delete karo (Session ke saath)
+    // Humne yahan 'blog' object par direct .deleteOne() chalaya hai
+    await blog.deleteOne({ session });
+
+    // 4. User ki list se hatao aur save karo (Session ke saath)
+    blog.user.blogs.pull(blog);
+    await blog.user.save({ session });
+
+    // 5. Ab dono kaam ek saath permanent honge
+    await session.commitTransaction();
+    session.endSession();
+
     return res.status(200).send({
       success: true,
-      message: "Blog Deleted!",
+      message: "Blog Deleted Successfully!",
     });
+
   } catch (error) {
+    if (session) {
+      await session.abortTransaction();
+      session.endSession();
+    }
     console.log(error);
-    return res.status(400).send({
-      success: false,
-      message: "Erorr WHile Deleteing BLog",
-      error,
-    });
+    return res.status(400).send({ success: false, message: "Error", error });
   }
 };
 
