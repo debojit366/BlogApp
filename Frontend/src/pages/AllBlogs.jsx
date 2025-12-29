@@ -21,7 +21,6 @@ const AllBlogs = () => {
   },[])
   return(
     <>
-    <h1>These are all blogs</h1>
     {blogs.map((blog)=>(
       <BlogCard title = {blog.title} description={blog.description}/>
     ))}

@@ -9,6 +9,7 @@ import MyBlog from './pages/MyBlog.jsx'
 import ErrorPage from './pages/ErrorPage.jsx'
 import CreateBlog from './pages/CreateBlog.jsx'
 import EditBlog from './pages/EditBlog.jsx'
+import Home from './pages/Home.jsx'
 function App() {
   const [loggedIn , setLoggedIn] = useState(localStorage.getItem("userId") ? true : false);
   const location = useLocation();
@@ -17,6 +18,7 @@ function App() {
       <LoginContext.Provider value = {{loggedIn,setLoggedIn}}>
         {location.pathname != '/error' && <NavBar/>}
       <Routes>
+        <Route path = '/' element={<Home/>}/>
         <Route path = '/register' element={<Register/>}/>
         <Route path = '/login' element={<Login/>}/>
         <Route path = '/all-blogs' element={<AllBlogs/>}/>

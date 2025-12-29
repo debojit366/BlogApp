@@ -1,25 +1,24 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { LoginContext } from '../context/LoginContext';
-import { useLocation } from 'react-router-dom';
+
 const Navbar = () => {
   const navigate = useNavigate();
-  const userid = localStorage.getItem("userId");
   const location = useLocation();
+  const userid = localStorage.getItem("userId");
   const { loggedIn, setLoggedIn } = useContext(LoginContext);
 
-  const handleLoginButton = () => navigate('/login');
   const handleLogoutButton = () => {
     localStorage.removeItem("userId");
     setLoggedIn(false);
     navigate('/');
   };
-  const handleRegisterButton = () => navigate('/register');
+
   const handleMyBlog = () => navigate(`/my-blog/${userid}`);
   const handleAllBlog = () => navigate('/all-blogs');
 
-  // Common Button Style
+  // Styles
   const btnStyle = {
     padding: '8px 16px',
     margin: '0 5px',
@@ -30,9 +29,15 @@ const Navbar = () => {
     transition: '0.3s',
   };
 
-  const primaryBtn = { ...btnStyle, backgroundColor: '#3b82f6', color: 'white' };
   const logoutBtn = { ...btnStyle, backgroundColor: '#ef4444', color: 'white' };
   const navBtn = { ...btnStyle, backgroundColor: '#f3f4f6', color: '#374151' };
+  const createBtn = { ...btnStyle, backgroundColor: '#10b981', color: 'white' };
+
+  // --- LOGIC: Agar loggedIn false hai, toh 'null' return karo ---
+  // Isse Navbar render hi nahi hoga
+  if (!loggedIn) {
+    return null;
+  }
 
   return (
     <nav style={{
@@ -56,21 +61,9 @@ const Navbar = () => {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        {!loggedIn ? (
-          <>
-            <button style={navBtn} onClick={handleLoginButton}>Login</button>
-            <button style={primaryBtn} onClick={handleRegisterButton}>Register</button>
-          </>
-        ) : (
-          <>
-            <button style={navBtn} onClick={handleAllBlog}>All Blogs</button>
-            <button style={navBtn} onClick={handleMyBlog}>My Blogs</button>
-            <button style={logoutBtn} onClick={handleLogoutButton}>Logout</button>
-          </>
-        )}
-        {loggedIn && location.pathname.includes('/my-blog') && (
-          <button style={navBtn} onClick={()=>navigate('/create-blog')}>Create Blog</button>
-        )}
+        <button style={navBtn} onClick={handleMyBlog}>My Blogs</button>
+
+        <button style={logoutBtn} onClick={handleLogoutButton}>Logout</button>
       </div>
     </nav>
   );
