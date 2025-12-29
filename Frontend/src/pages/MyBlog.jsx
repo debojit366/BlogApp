@@ -31,7 +31,6 @@ const MyBlog = () => {
     },[])
   return (
     <div>
-        <button onClick={()=> navigate('/create-blog')}>Create Blog</button>
         {blogs.map((blog)=>(
             <BlogCard 
             key = {blog._id}
