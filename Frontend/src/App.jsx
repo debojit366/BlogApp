@@ -1,22 +1,29 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import NavBar from './component/NavBar.jsx'
-import {Route , Routes} from 'react-router-dom'
+import {Route , Routes, useLocation} from 'react-router-dom'
 import Register from './pages/Register.jsx'
 import Login from './pages/login.jsx'
 import { LoginContext } from './context/LoginContext.js'
 import AllBlogs from './pages/AllBlogs.jsx'
-import MyBlog from './component/MyBlog.jsx'
+import MyBlog from './pages/MyBlog.jsx'
+import ErrorPage from './pages/ErrorPage.jsx'
+import CreateBlog from './pages/CreateBlog.jsx'
+import EditBlog from './pages/EditBlog.jsx'
 function App() {
-  const [loggedIn , setLoggedIn] = useState(false);
+  const [loggedIn , setLoggedIn] = useState(localStorage.getItem("userId") ? true : false);
+  const location = useLocation();
   return (
     <>
       <LoginContext.Provider value = {{loggedIn,setLoggedIn}}>
-        <NavBar/>
+        {location.pathname != '/error' && <NavBar/>}
       <Routes>
         <Route path = '/register' element={<Register/>}/>
         <Route path = '/login' element={<Login/>}/>
         <Route path = '/all-blogs' element={<AllBlogs/>}/>
-        <Route path = '/my-blog' element={<MyBlog/>}/>
+        <Route path = '/my-blog/:userid' element={<MyBlog/>}/>
+        <Route path = '/error' element={<ErrorPage/>}/>
+        <Route path = '/create-blog' element={<CreateBlog/>}/>
+        <Route path = '/edit-blog/:blogId' element={<EditBlog/>}/>
       </Routes>
       </LoginContext.Provider>
     </>

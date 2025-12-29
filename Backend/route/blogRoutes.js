@@ -11,13 +11,13 @@ const router = express.Router();
 
 //routes
 // GET || all blogs
-router.get("/all-blog", getAllBlogsController);
+router.get("/all-blog", getAllBlogsController); // to get something from server
 
 //POST || create blog
-router.post("/create-blog", createBlogController);
+router.post("/create-blog", createBlogController); // to create something on server
 
 //PUT || update blog
-router.put("/update-blog/:id", updateBlogController);
+router.put("/update-blog/:id", updateBlogController); //to update on server
 
 //GET || SIngle Blog Details
 router.get("/get-blog/:id", getBlogByIdController);

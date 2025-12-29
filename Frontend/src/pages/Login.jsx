@@ -13,20 +13,23 @@ const Login = () => {
             password:password
         });
         if(res.data.success){
-            console.log(res.data.user);
+        localStorage.setItem("userId", res.data.user._id); 
+      
+        console.log("User Data:", res.data.user);
+        
+        // 2. Context update kar rahe hain
+        setLoggedIn(true);
+        
+        // 3. Success message (optional)
+        alert("Login Successful!");
+        navigate('/');
         }
     } catch (error) {
         console.log(error);
     }
-    setLoggedIn(true);
-    navigate('/');
   };
-  const [username,setUsername] = useState('');
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
-  const handleOnChangeUsername = (e)=>{
-    setUsername(e.target.value)
-  }
   const handleOnChangeEmail = (e)=>{
     setEmail(e.target.value)
   }
