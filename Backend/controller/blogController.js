@@ -147,26 +147,24 @@ const getBlogByIdController = async (req, res) => {
 const deleteBlogController = async (req, res) => {
   let session;
   try {
-    // 1. Pehle blog dhoondho (Delete mat karo abhi) aur user ko populate karo
+
     const blog = await blogModel.findById(req.params.id).populate("user");
 
     if (!blog) {
       return res.status(404).send({ success: false, message: "Blog not found" });
     }
 
-    // 2. Ab session shuru karo asli kaam ke liye
     session = await mongoose.startSession();
     session.startTransaction();
 
-    // 3. Blog ko delete karo (Session ke saath)
-    // Humne yahan 'blog' object par direct .deleteOne() chalaya hai
-    await blog.deleteOne({ session });
+    await blog.deleteOne({ session }); // it is used when we have the object to be deleted
+    // session(session) is used when we dont have it mongoose finds and deletes
 
-    // 4. User ki list se hatao aur save karo (Session ke saath)
+    
     blog.user.blogs.pull(blog);
     await blog.user.save({ session });
 
-    // 5. Ab dono kaam ek saath permanent honge
+    
     await session.commitTransaction();
     session.endSession();
 

@@ -1,22 +1,22 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { LoginContext } from '../context/LoginContext';
-
+import { CircleUser } from 'lucide-react';
 const Navbar = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const userid = localStorage.getItem("userId");
+  const profilePic = localStorage.getItem("profilePic"); 
   const { loggedIn, setLoggedIn } = useContext(LoginContext);
 
   const handleLogoutButton = () => {
     localStorage.removeItem("userId");
+    localStorage.removeItem("profilePic"); // Clear pic on logout
     setLoggedIn(false);
     navigate('/');
   };
 
   const handleMyBlog = () => navigate(`/my-blog/${userid}`);
-  const handleAllBlog = () => navigate('/all-blogs');
 
   // Styles
   const btnStyle = {
@@ -31,39 +31,45 @@ const Navbar = () => {
 
   const logoutBtn = { ...btnStyle, backgroundColor: '#ef4444', color: 'white' };
   const navBtn = { ...btnStyle, backgroundColor: '#f3f4f6', color: '#374151' };
-  const createBtn = { ...btnStyle, backgroundColor: '#10b981', color: 'white' };
+  
+  // Profile Icon Style
+  const profileIconStyle = {
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%', // Makes it a circle
+    objectFit: 'cover', // Prevents stretching
+    border: '2px solid #3b82f6',
+    marginLeft: '15px',
+    cursor: 'pointer'
+  };
 
-  // --- LOGIC: Agar loggedIn false hai, toh 'null' return karo ---
-  // Isse Navbar render hi nahi hoga
-  if (!loggedIn) {
-    return null;
-  }
+  if (!loggedIn) return null;
 
   return (
     <nav style={{
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: '1rem 5%',
+      padding: '0.5rem 5%', // Reduced padding for height
       backgroundColor: '#ffffff',
       boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
       position: 'sticky',
       top: 0,
       zIndex: 1000
     }}>
-      <div style={{ 
-        fontSize: '1.5rem', 
-        fontWeight: 'bold', 
-        color: '#3b82f6', 
-        cursor: 'pointer' 
-      }} onClick={() => navigate('/')}>
+      <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6', cursor: 'pointer' }} onClick={() => navigate('/')}>
         Blog<span style={{color: '#1e3a8a'}}>App</span>
       </div>
-
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <button style={navBtn} onClick={handleMyBlog}>My Blogs</button>
-
         <button style={logoutBtn} onClick={handleLogoutButton}>Logout</button>
+        <CircleUser 
+          size={35} 
+          color="#374151" 
+          strokeWidth={1.5} 
+          style={{ cursor: 'pointer', marginLeft: '5px' }}
+          onClick={() => navigate(`/profile`)}
+        />
       </div>
     </nav>
   );

@@ -1,5 +1,7 @@
 import userModel from '../models/userModel.js';
 import bcrypt from 'bcrypt'
+import blogModel from '../models/blogModel.js';
+import mongoose from 'mongoose';
 const registerController = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -98,4 +100,38 @@ const loginController = async (req, res) => {
     });
   }
 };
-export {registerController,loginController,getAllUsers}
+const deleteUser = async (req,res)=>{
+  let session;
+  try {
+    const userId = req.params.userId;
+    const user = await userModel.findById(userId);
+    if(!user){
+      return res.status(404).json({
+        success:false,
+        message:"user not found"
+      })
+    }
+    session = await mongoose.startSession();
+    session.startTransaction();
+    await blogModel.deleteMany({user : userId}).session(session)
+    await user.deleteOne({session})
+    await session.commitTransaction()
+    session.endSession()
+    return res.status(200).json({
+      success:true,
+      message:"user deleted successfully"
+    })
+  } catch (error) {
+    if(session){
+      await session.abortTransaction()
+      session.endSession()
+    }
+    res.status(500).json({
+      success:false,
+      message:"something went wrong",
+      error:error.message,
+    })
+  }
+
+}
+export {registerController,loginController,getAllUsers,deleteUser}
