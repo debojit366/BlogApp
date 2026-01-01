@@ -1,20 +1,23 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import AllBlogs from './AllBlogs';
 
 const Home = () => {
   const navigate = useNavigate();
+  // localStorage se userId check kar rahe hain
   const isLoggedIn = localStorage.getItem("userId");
 
   // --- Styles ---
   const heroSection = {
-    height: '100vh', // Poori screen cover karega kyunki navbar nahi hai
+    minHeight: '100vh', 
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: isLoggedIn ? 'flex-start' : 'center', // Logged in hai toh upar se shuru hoga
     alignItems: 'center',
     textAlign: 'center',
     background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-    padding: '0 20px',
+    padding: isLoggedIn ? '20px' : '0 20px',
   };
 
   const titleStyle = {
@@ -58,33 +61,29 @@ const Home = () => {
 
   return (
     <div style={heroSection}>
-      <h1 style={titleStyle}>
-        Blog<span style={{ color: '#3b82f6' }}>App</span>
-      </h1>
-      
-      <p style={{ fontSize: '1.5rem', color: '#1e3a8a', fontWeight: '500', marginBottom: '10px' }}>
-        Where words create worlds.
-      </p>
+      {isLoggedIn ? (
+        /* --- Case 1: Logged In (Show Blogs) --- */
+        <div style={{ width: '100%', maxWidth: '1200px' }}>
+             <h2 style={{color: '#1e3a8a', marginBottom: '30px'}}>Welcome Back! Explore Blogs</h2>
+             <AllBlogs />
+        </div>
+      ) : (
+        /* --- Case 2: Not Logged In (Show Hero Page) --- */
+        <>
+          <h1 style={titleStyle}>
+            Blog<span style={{ color: '#3b82f6' }}>App</span>
+          </h1>
+          
+          <p style={{ fontSize: '1.5rem', color: '#1e3a8a', fontWeight: '500', marginBottom: '10px' }}>
+            Where words create worlds.
+          </p>
 
-      <p style={{ fontSize: '1.1rem', color: '#64748b', maxWidth: '500px', marginBottom: '30px', lineHeight: '1.6' }}>
-        A simple and elegant platform to share your thoughts with the world. 
-        Start your blogging journey today.
-      </p>
+          <p style={{ fontSize: '1.1rem', color: '#64748b', maxWidth: '500px', marginBottom: '30px', lineHeight: '1.6' }}>
+            A simple and elegant platform to share your thoughts with the world. 
+            Start your blogging journey today.
+          </p>
 
-      <div style={buttonGroup}>
-        {isLoggedIn ? (
-          /* Agar login hai toh seedha dashboard */
-          <button 
-            style={primaryBtn}
-            onClick={() => navigate('/all-blogs')}
-            onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-            onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
-          >
-            Go to Dashboard
-          </button>
-        ) : (
-          /* Agar login nahi hai toh dono options */
-          <>
+          <div style={buttonGroup}>
             <button 
               style={primaryBtn}
               onClick={() => navigate('/register')}
@@ -107,14 +106,13 @@ const Home = () => {
             >
               Sign In
             </button>
-          </>
-        )}
-      </div>
+          </div>
 
-      {/* Subtle background element */}
-      <div style={{ marginTop: '50px', color: '#94a3b8', fontSize: '0.9rem' }}>
-        Simple • Beautiful • Minimal
-      </div>
+          <div style={{ marginTop: '50px', color: '#94a3b8', fontSize: '0.9rem' }}>
+            Simple • Beautiful • Minimal
+          </div>
+        </>
+      )}
     </div>
   );
 };
